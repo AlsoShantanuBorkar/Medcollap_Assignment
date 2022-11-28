@@ -12,9 +12,7 @@ import 'package:xml2json/xml2json.dart';
 class LocationProvider extends ChangeNotifier {
   LocationProvider() {
     loadFromDB();
-
   }
-  
 
   final _myBox = Hive.box("COUNTRY_BOX");
 
@@ -51,7 +49,6 @@ class LocationProvider extends ChangeNotifier {
         // ? If Denied Again then Throw Exception.
         throw Exception('Location Permissions Denied');
       } else {
-        
         currentPosition = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high);
         _position = currentPosition;
@@ -128,16 +125,14 @@ class LocationProvider extends ChangeNotifier {
 
       // ? Extract CurrencyCode from Country Object
       String rate = await getExchangeRate(currentCountry.currencyCode!);
-      
+
       // ? Add Exchange Rate to Country Object
       currentCountry.exchangeRate = rate;
-        log(currentCountry.exchangeRate.toString());
       // ? Append Country to _countriesList Map
       _countriesList[currentCountry.countryName!] = currentCountry;
-
+      notifyListeners();
       // ? Save _countriesList to LocalStorage
-      await _saveToDB();
-
+      _saveToDB();
     } on SocketException catch (_) {
       throw 'Error whilst getting the data: no internet connection.';
     } on HttpException catch (_) {

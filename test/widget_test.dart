@@ -32,11 +32,12 @@ void main() {
     Finder scaffold = find.byType(Scaffold);
     expect(scaffold, findsAtLeastNWidgets(1));
   });
-  // testWidgets('Find Button Text Widget', (WidgetTester tester) async {
 
-  //   await tester.pumpWidget(MyApp());
+  testWidgets('Find Button Text Widget', (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp());
+    await Future.delayed(Duration(seconds: 5));
 
-  //   Finder buttonText = find.text('Get Current Location');
-  //   expect(buttonText, findsOneWidget);
-  // });
+    Finder buttonText = find.text('Get Current Location');
+    expect(buttonText, findsOneWidget);
+  });
 }

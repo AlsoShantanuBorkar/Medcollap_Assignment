@@ -12,6 +12,10 @@ void main() {
    await Hive.openBox('COUNTRY_BOX');
  }));
 
+
+  // ! Geolocator Errors - No implementation found for method checkPermission on channel flutter.baseflow.com/geolocator 
+  
+  // ! Unable to check for location services
   test('Testing Location Provider', () async {
     
     
