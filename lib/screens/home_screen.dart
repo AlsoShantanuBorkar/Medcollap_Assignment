@@ -35,7 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.only(top: 10.0),
                         child: ElevatedButton(
                           onPressed: (() async {
-                            provider.getCurrentLocation();
+                            await provider.getCurrentLocation();
+                            setState(() {});
                           }),
                           child: const Text('Get Current Location'),
                         ),
@@ -63,12 +64,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       provider.countryList.isEmpty
                           ? Container()
                           : Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextField(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextField(
                                 onChanged: (value) {
                                   setState(() {
                                     searchQuery.text = value;
-                                    searchMap = updateSearchMap(searchQuery.text) ;
+                                    searchMap =
+                                        updateSearchMap(searchQuery.text);
                                   });
                                 },
                                 decoration: const InputDecoration(
@@ -76,51 +78,61 @@ class _HomeScreenState extends State<HomeScreen> {
                                   suffixIcon: Icon(Icons.search),
                                 ),
                               ),
-                          ),
+                            ),
                       searchMap.isEmpty
-                          ? provider.countryList.isEmpty
-                              ? Container()
-                              : Expanded(
-                                  child: ListView.builder(
-                                    itemCount: Provider.of<LocationProvider>(context).countryList.length,
-                                    itemBuilder: ((context, index) {
-                                      String key = provider.countryList.keys
-                                          .elementAt(index);
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Card(
-                                          elevation: 10,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: Text(
-                                                    'Country Name: ${provider.countryList[key]!.countryName!}'),
+                          ? searchQuery.text.isNotEmpty
+                              ? Text("No Matches Found")
+                              : provider.countryList.isEmpty
+                                  ? Container()
+                                  : Expanded(
+                                      child: ListView.builder(
+                                        itemCount:
+                                            Provider.of<LocationProvider>(
+                                                    context)
+                                                .countryList
+                                                .length,
+                                        itemBuilder: ((context, index) {
+                                          String key =
+                                              Provider.of<LocationProvider>(
+                                                      context)
+                                                  .countryList
+                                                  .keys
+                                                  .elementAt(index);
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Card(
+                                              elevation: 10,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    child: Text(
+                                                        'Country Name: ${provider.countryList[key]!.countryName!}'),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    child: Text(
+                                                        'Capital: ${provider.countryList[key]!.capital!}'),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    child: Text(
+                                                        '1 USD to ${provider.countryList[key]!.currencyCode!} : ${provider.countryList[key]!.exchangeRate}'),
+                                                  ),
+                                                ],
                                               ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: Text(
-                                                    'Capital: ${provider.countryList[key]!.capital!}'),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: Text(
-                                                    '1 USD to ${provider.countryList[key]!.currencyCode!} : ${provider.countryList[key]!.exchangeRate}'),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                                  ),
-                                )
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                    )
                           : Expanded(
-                            child: ListView.builder(
+                              child: ListView.builder(
                                 itemCount: searchMap.length,
                                 itemBuilder: ((context, index) {
                                   String key = searchMap.keys.elementAt(index);
@@ -153,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   );
                                 }),
                               ),
-                          ),
+                            ),
                     ],
                   ),
                 ),
@@ -165,9 +177,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<dynamic, dynamic> updateSearchMap(String query) {
     Map<dynamic, dynamic> searchMap = {};
     Map<dynamic, dynamic> countryList =
-        Provider.of<LocationProvider>(context,listen: false).countryList;
+        Provider.of<LocationProvider>(context, listen: false).countryList;
     countryList.forEach((key, value) {
-      if (key.toString().toLowerCase().contains(query.toLowerCase())|| value.capital.toString().toLowerCase().contains(query.toLowerCase())) {
+      if (key.toString().toLowerCase().contains(query.toLowerCase()) ||
+          value.capital
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase())) {
         searchMap[key] = value;
       }
     });
